@@ -37,13 +37,14 @@ class Criterion(torch.nn.Module):
         for anchor, positive, negative_set in zip(anchors, positives, negatives):
             a_embs, p_embs, n_embs = batch[anchor:anchor+1], batch[positive:positive+1], batch[negative_set]
             cos1 = torch.nn.CosineSimilarity(dim=1)
+            cos2 = torch.nn.CosineSimilarity(dim=2)
             cp = cos1(a_embs,p_embs)
-            cn = [cos1(a_embs[:,None,:],n_embs[:,k,:]) for k in range(n_embs.shape[1])]
-            loss = (cp - sum(cn)/(n_embs.shape[1]) - 1)**2
+            cn = [cos2(a_embs[:,None,:],n_embs[:,k:k+1,:]) for k in range(n_embs.shape[1])]
+            loss = (cp[:,None] - sum(cn)/(n_embs.shape[1]) - 1)**2
             
             # inner_sum = a_embs[:,None,:].bmm((n_embs - p_embs[:,None,:]).permute(0,2,1))
             # inner_sum = inner_sum.view(inner_sum.shape[0], inner_sum.shape[-1])
             # loss  = loss + torch.mean(torch.log(torch.sum(torch.exp(inner_sum), dim=1) + 1))/len(anchors)
             # loss  = loss + self.l2_weight*torch.mean(torch.norm(batch, p=2, dim=1))/len(anchors)
 
-        return loss
+        return loss.reshape(-1)
