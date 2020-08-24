@@ -1,5 +1,5 @@
 ### Standard DML criteria
-from criteria import triplet, margin, proxynca, npair
+from criteria import triplet, margin, proxynca, npair, mpcl
 from criteria import lifted, contrastive, softmax
 from criteria import angular, snr, histogram, arcface
 from criteria import softtriplet, multisimilarity, quadruplet
@@ -31,7 +31,9 @@ def select(loss, opt, to_optim, batchminer=None):
               'dc':dc,
               'imrot':imrot,
               'fast_moco':fast_moco,
-              'invariantspread':invariant_spread}
+              'invariantspread':invariant_spread,
+              'mpcl': mpcl
+              }
 
 
     if loss not in losses: raise NotImplementedError('Loss {} not implemented!'.format(loss))
