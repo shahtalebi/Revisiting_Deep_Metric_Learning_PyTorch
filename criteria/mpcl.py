@@ -48,7 +48,7 @@ class Criterion(torch.nn.Module):
 
         # return loss
 
-	def forward(self, batch, labels, **kwargs):
+    def forward(self, batch, labels, **kwargs):
         anchors, positives, negatives = self.batchminer(batch, labels)
 
         ##
